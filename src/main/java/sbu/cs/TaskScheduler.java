@@ -1,6 +1,7 @@
 package sbu.cs;
-
+import java.util.Comparator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TaskScheduler
@@ -27,12 +28,32 @@ public class TaskScheduler
             TODO
                 Simulate utilizing CPU by sleeping the thread for the specified processingTime
              */
+            try {
+                Thread.sleep(processingTime);
+            } catch (InterruptedException e) {
+                System.out.println(e.fillInStackTrace());
+            }
+        }
+        public int getProcessingTime() {
+            return processingTime;
         }
     }
 
-    public static ArrayList<String> doTasks(ArrayList<Task> tasks)
-    {
+    public static ArrayList<String> doTasks(ArrayList<Task> tasks) throws InterruptedException {
         ArrayList<String> finishedTasks = new ArrayList<>();
+        tasks.sort(Comparator.comparing(Task::getProcessingTime));
+        Collections.reverse(tasks);
+        for(Task temp : tasks) {
+            Thread thread = new Thread(temp);
+            thread.start();
+            try{
+                thread.join();
+                finishedTasks.add(temp.taskName);
+            }
+            catch(InterruptedException e) {
+                System.out.println(e.getStackTrace());
+            }
+        }
 
         /*
         TODO
