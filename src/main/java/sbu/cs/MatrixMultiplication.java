@@ -1,5 +1,6 @@
 package sbu.cs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MatrixMultiplication {
@@ -8,16 +9,40 @@ public class MatrixMultiplication {
     public static class BlockMultiplier implements Runnable
     {
         List<List<Integer>> tempMatrixProduct;
-        public BlockMultiplier() {
+        List<List<Integer>> AMatrix;
+        List<List<Integer>> BMatrix;
+        int row;
+        int col;
+        public BlockMultiplier(List<List<Integer>> AMatrix, List<List<Integer>> BMatrix, int row, int col) {
             // TODO
+            this.AMatrix = AMatrix;
+            this.BMatrix = BMatrix;
+            this.row = row;
+            this.col = col;
         }
 
         @Override
         public void run() {
+            tempMatrixProduct = new ArrayList<>();
             /*
             TODO
                 Perform the calculation and store the final values in tempMatrixProduct
             */
+            for(int i = 0; i < AMatrix.size()/2; i++) {
+                tempMatrixProduct.add(new ArrayList<>());
+                for(int j = 0; j < BMatrix.get(0).size()/2; j++) {
+                    tempMatrixProduct.get(i).add(0);
+                }
+            }
+            for(int i = row; i < row + (AMatrix.size()/2); i++) {
+                for(int j = col ; j < col + (BMatrix.get(0).size()/2); j++) {
+                    int temp = 0;
+                    for(int k = 0; k < BMatrix.size(); k++) {
+                        temp += AMatrix.get(i).get(k) * BMatrix.get(k).get(j);
+                    }
+                    tempMatrixProduct.get(i - row).set(j - col, temp);
+                }
+            }
         }
     }
 
